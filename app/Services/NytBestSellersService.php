@@ -22,18 +22,18 @@ class NytBestSellersService
             'api-key' => Config::get('services.nyt.key'),
             'author'  => $params['author']  ?? null,
             'title'   => $params['title']   ?? null,
-            'isbn'    => isset($params['isbn']) ? implode(';', $params['isbn']) : null,
+            'isbn'    => $params['isbn'] ?? null,
             'offset'  => $params['offset']  ?? null,
         ]);
-
         $cacheKey = 'nyt:best-sellers:'.md5(serialize($query));
 
         return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($query) {
             $response = $this->http
                 ->baseUrl(Config::get('services.nyt.base_uri'))
                 ->get('history.json', $query);
+
             if ($response->failed()) {
-                throw new Exception('NYT API error: '.$response->status());
+                throw new Exception($response->json()['errors'][0], $response->json()['errors'][1]=='Bad Request' ? 422 : 500);
             }
 
             $json = $response->json();

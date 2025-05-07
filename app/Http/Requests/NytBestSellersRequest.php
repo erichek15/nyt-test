@@ -8,6 +8,17 @@ use \Illuminate\Contracts\Validation\Validator;
 
 class NytBestSellersRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('isbn') && is_string($this->input('isbn'))) {
+            $this->merge([
+                'isbn' => array_filter(
+                    explode(';', $this->input('isbn')),
+                    fn($v) => $v !== ''
+                ),
+            ]);
+        }
+    }
     /**
      * @return array[]
      */

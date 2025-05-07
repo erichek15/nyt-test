@@ -31,8 +31,8 @@ class BestSellersController extends Controller
             report($e);
             return response()->json([
                 'success' => false,
-                'message' => 'Ошибка при обращении к NYT API',
-            ], 500);
+                'message' => 'Ошибка при обращении к NYT API. '. $e->getMessage(),
+            ], $e->getCode());
         }
     }
 }
