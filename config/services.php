@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'nyt' => [
+        'base_uri' => env('NYT_BASE_URI', 'https://api.nytimes.com/svc/books/v3/lists/best-sellers/'),
+        'key'      => env('NYT_API_KEY'),
+    ],
+
 ];
